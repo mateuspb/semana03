@@ -9,9 +9,12 @@ namespace Codenation.Challenge
     {
         List<Team> teams = new List<Team>();
         List<Player> players = new List<Player>();
+        List<Captain> captains = new List<Captain>();
+
         public SoccerTeamsManager()
         {
         }
+        
         public bool TeamExists(long teamId)
         {
             return teams.Any(x => x.Id == teamId);
@@ -37,17 +40,30 @@ namespace Codenation.Challenge
             {
                 throw new UniqueIdentifierException();
             }
+            if (!TeamExists(id))
+            {
+                throw new TeamNotFoundException();
+            }
             players.Add(new Player(id, teamId, name, birthDate, skillLevel, salary));
         }
 
         public void SetCaptain(long playerId)
         {
-            throw new NotImplementedException();
+            if (!PlayerExists(playerId))
+            {
+                throw new PlayerNotFoundException();
+            }
+            long selectTeam = players.Where(x => x.Id == playerId).Select(x => x.TeamId).FirstOrDefault();
+            captains.Add(new Captain(selectTeam, playerId));
         }
 
         public long GetTeamCaptain(long teamId)
         {
-            throw new NotImplementedException();
+            if (!TeamExists(teamId))
+            {
+                throw new TeamNotFoundException();
+            }
+            return captains.Where(x => x.TeamId == teamId).Select(x => x.PlayerId).FirstOrDefault();
         }
 
         public string GetPlayerName(long playerId)
