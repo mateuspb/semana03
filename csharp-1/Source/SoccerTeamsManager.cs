@@ -1,23 +1,43 @@
 using System;
 using System.Collections.Generic;
 using Codenation.Challenge.Exceptions;
+using System.Linq;
 
 namespace Codenation.Challenge
 {
     public class SoccerTeamsManager : IManageSoccerTeams
     {
+        List<Team> teams = new List<Team>();
+        List<Player> players = new List<Player>();
         public SoccerTeamsManager()
         {
+        }
+        public bool TeamExists(long teamId)
+        {
+            return teams.Any(x => x.Id == teamId);
+        }
+
+        public bool PlayerExists(long playerId)
+        {
+            return players.Any(x => x.Id == playerId);
         }
 
         public void AddTeam(long id, string name, DateTime createDate, string mainShirtColor, string secondaryShirtColor)
         {
-            throw new NotImplementedException();
+            if (TeamExists(id))
+            {
+                throw new UniqueIdentifierException();
+            }
+            teams.Add(new Team(id, name, createDate, mainShirtColor, secondaryShirtColor));
         }
 
         public void AddPlayer(long id, long teamId, string name, DateTime birthDate, int skillLevel, decimal salary)
         {
-            throw new NotImplementedException();
+            if (PlayerExists(id))
+            {
+                throw new UniqueIdentifierException();
+            }
+            players.Add(new Player(id, teamId, name, birthDate, skillLevel, salary));
         }
 
         public void SetCaptain(long playerId)
