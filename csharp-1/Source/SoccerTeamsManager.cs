@@ -40,7 +40,7 @@ namespace Codenation.Challenge
             {
                 throw new UniqueIdentifierException();
             }
-            if (!TeamExists(id))
+            if (!TeamExists(teamId))
             {
                 throw new TeamNotFoundException();
             }
@@ -53,8 +53,13 @@ namespace Codenation.Challenge
             {
                 throw new PlayerNotFoundException();
             }
-            long selectTeam = players.Where(x => x.Id == playerId).Select(x => x.TeamId).FirstOrDefault();
-            captains.Add(new Captain(selectTeam, playerId));
+            long selectedTeamId = players.Where(x => x.Id == playerId).Select(x => x.TeamId).FirstOrDefault();
+            long existsCaptain = captains.Where(x => x.TeamId == selectedTeamId).Select(x => x.PlayerId).FirstOrDefault();
+            if (existsCaptain != 0)
+            {
+                bool ok = captains.Remove(new Captain(selectedTeamId, existsCaptain));
+            }
+            captains.Add(new Captain(selectedTeamId, playerId));
         }
 
         public long GetTeamCaptain(long teamId)
@@ -68,53 +73,90 @@ namespace Codenation.Challenge
 
         public string GetPlayerName(long playerId)
         {
-            throw new NotImplementedException();
+            if (!PlayerExists(playerId))
+            {
+                throw new PlayerNotFoundException();
+            }
+            return players.Where(x => x.Id == playerId).Select(x => x.Name).ToString();
         }
 
         public string GetTeamName(long teamId)
         {
-            throw new NotImplementedException();
+            if (!TeamExists(teamId))
+            {
+                throw new TeamNotFoundException();
+            }
+            return teams.Where(x => x.Id == teamId).Select(x => x.Name).ToString();
         }
 
         public List<long> GetTeamPlayers(long teamId)
         {
-            throw new NotImplementedException();
+            if (!TeamExists(teamId))
+            {
+                throw new TeamNotFoundException();
+            }
+            return players.OrderBy(x => x.Id).Where(x => x.TeamId == teamId).Select(x => x.Id).ToList();
         }
 
         public long GetBestTeamPlayer(long teamId)
         {
-            throw new NotImplementedException();
+            if (!TeamExists(teamId))
+            {
+                throw new TeamNotFoundException();
+            }
+            return players.OrderByDescending(x => x.SkillLevel).ThenBy(x => x.Id).Where(x => x.TeamId == teamId).Select(x => x.Id).FirstOrDefault();
         }
 
         public long GetOlderTeamPlayer(long teamId)
         {
-            throw new NotImplementedException();
+            if (!TeamExists(teamId))
+            {
+                throw new TeamNotFoundException();
+            }
+            return players.OrderByDescending(x => x.BirthDate).ThenBy(x => x.Id).Where(x => x.TeamId == teamId).Select(x => x.Id).FirstOrDefault();
         }
 
         public List<long> GetTeams()
         {
-            throw new NotImplementedException();
+            return teams.OrderBy(x => x.Id).Select(x => x.Id).ToList();
         }
 
         public long GetHigherSalaryPlayer(long teamId)
         {
-            throw new NotImplementedException();
+            if (!TeamExists(teamId))
+            {
+                throw new TeamNotFoundException();
+            }
+            return players.OrderByDescending(x => x.Salary).ThenBy(x => x.Id).Where(x => x.TeamId == teamId).Select(x => x.Id).FirstOrDefault();
         }
 
         public decimal GetPlayerSalary(long playerId)
         {
-            throw new NotImplementedException();
+            if (!PlayerExists(playerId))
+            {
+                throw new PlayerNotFoundException();
+            }
+            return players.Where(x => x.Id == playerId).Select(x => x.Salary).FirstOrDefault();
         }
 
         public List<long> GetTopPlayers(int top)
         {
-            throw new NotImplementedException();
+            return players.OrderByDescending(x => x.Id).Select(x => x.Id).Take(top).ToList();
         }
 
         public string GetVisitorShirtColor(long teamId, long visitorTeamId)
         {
-            throw new NotImplementedException();
+            if (!TeamExists(teamId) || !TeamExists(visitorTeamId))
+            {
+                throw new TeamNotFoundException();
+            }
+            string homeShirt = teams.Where(x => x.Id == teamId).Select(x => x.MainShirtColor).FirstOrDefault();
+            string visitorShirt = teams.Where(x => x.Id == visitorTeamId).Select(x => x.MainShirtColor).FirstOrDefault();
+            if(homeShirt == visitorShirt)
+            {
+                visitorShirt = teams.Where(x => x.Id == visitorTeamId).Select(x => x.SecondaryShirtColor).FirstOrDefault();
+            }
+            return visitorShirt;
         }
-
     }
 }
