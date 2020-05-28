@@ -113,7 +113,7 @@ namespace Codenation.Challenge
             {
                 throw new TeamNotFoundException();
             }
-            return players.OrderByDescending(x => x.BirthDate).ThenBy(x => x.Id).Where(x => x.TeamId == teamId).Select(x => x.Id).FirstOrDefault();
+            return players.OrderBy(x => x.BirthDate).ThenBy(x => x.Id).Where(x => x.TeamId == teamId).Select(x => x.Id).FirstOrDefault();
         }
 
         public List<long> GetTeams()
@@ -141,7 +141,7 @@ namespace Codenation.Challenge
 
         public List<long> GetTopPlayers(int top)
         {
-            return players.OrderByDescending(x => x.Salary).ThenBy(x => x.Id).Select(x => x.Id).Take(top).ToList();
+            return players.OrderByDescending(x => x.SkillLevel).ThenBy(x => x.Id).Select(x => x.Id).Take(top).ToList();
         }
 
         public string GetVisitorShirtColor(long teamId, long visitorTeamId)
