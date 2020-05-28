@@ -77,7 +77,7 @@ namespace Codenation.Challenge
             {
                 throw new PlayerNotFoundException();
             }
-            return players.Where(x => x.Id == playerId).Select(x => x.Name).ToString();
+            return players.Where(x => x.Id == playerId).Select(x => x.Name).FirstOrDefault().ToString();
         }
 
         public string GetTeamName(long teamId)
@@ -86,7 +86,7 @@ namespace Codenation.Challenge
             {
                 throw new TeamNotFoundException();
             }
-            return teams.Where(x => x.Id == teamId).Select(x => x.Name).ToString();
+            return teams.Where(x => x.Id == teamId).Select(x => x.Name).FirstOrDefault().ToString();
         }
 
         public List<long> GetTeamPlayers(long teamId)
@@ -141,7 +141,7 @@ namespace Codenation.Challenge
 
         public List<long> GetTopPlayers(int top)
         {
-            return players.OrderByDescending(x => x.Id).Select(x => x.Id).Take(top).ToList();
+            return players.OrderByDescending(x => x.Salary).ThenBy(x => x.Id).Select(x => x.Id).Take(top).ToList();
         }
 
         public string GetVisitorShirtColor(long teamId, long visitorTeamId)
