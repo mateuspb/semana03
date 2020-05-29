@@ -96,6 +96,7 @@ namespace Codenation.Challenge
         {
             var manager = new SoccerTeamsManager();
             manager.AddTeam(1, "Time 1", DateTime.Now, "cor 1", "cor 2");
+            manager.AddTeam(2, "Time 2", DateTime.Now, "cor 1", "cor 2");
             manager.AddPlayer(1, 1, "Jogador 1", DateTime.Today, 0, 0);
             manager.AddPlayer(2, 1, "Jogador 2", DateTime.Today, 0, 0);
             manager.SetCaptain(1);
@@ -104,6 +105,8 @@ namespace Codenation.Challenge
             Assert.Equal(2, manager.GetTeamCaptain(1));
             Assert.Throws<PlayerNotFoundException>(() =>
               manager.SetCaptain(99));
+            Assert.Throws<CaptainNotFoundException>(() =>
+              manager.GetTeamCaptain(2));
         }
 
         [Fact]
