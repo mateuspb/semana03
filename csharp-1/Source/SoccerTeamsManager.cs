@@ -54,10 +54,10 @@ namespace Codenation.Challenge
                 throw new PlayerNotFoundException();
             }
             long selectedTeamId = players.Where(x => x.Id == playerId).Select(x => x.TeamId).FirstOrDefault();
-            long existsCaptain = captains.Where(x => x.TeamId == selectedTeamId).Select(x => x.PlayerId).FirstOrDefault();
-            if (existsCaptain != 0)
+            Captain existCaptain = captains.FirstOrDefault(x => x.TeamId == selectedTeamId); 
+            if (existCaptain != null)
             {
-                bool ok = captains.Remove(new Captain(selectedTeamId, existsCaptain));
+                captains.Remove(existCaptain); 
             }
             captains.Add(new Captain(selectedTeamId, playerId));
         }
