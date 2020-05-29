@@ -68,7 +68,12 @@ namespace Codenation.Challenge
             {
                 throw new TeamNotFoundException();
             }
-            return captains.Where(x => x.TeamId == teamId).Select(x => x.PlayerId).FirstOrDefault();
+            Captain existCaptain = captains.FirstOrDefault(x => x.TeamId == teamId);
+            if (existCaptain == null)
+            {
+                throw new CaptainNotFoundException();
+            }
+            return existCaptain.PlayerId;
         }
 
         public string GetPlayerName(long playerId)
